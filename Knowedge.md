@@ -198,3 +198,15 @@ teamCompany.start();
   @Injectable({scope: Scope.TRANSIENT})
   export class AppService {}
   ```
+
+# Xác thực sử dụng passport
+
+- `passport` là thư viện gốc => giúp tạo ra middleware (can thiệp vào req và res), và lưu trữ thông tin người dùng đăng nhập (req.user)
+- `nestjs/passport` là thư viện giúp viết theo phong cách NestJS, giúp can thiệp vào passport dễ dàng hơn
+- `passport-local` đây là strategy hỗ trợ việc đăng nhập sử dụng username/password
+
+# Guards
+
+- Làm nhiệm vụ giống middleware, can thiệp vào req và res. Req -> Guards -> Res
+- Với middleware, không thể biết `handler` phía sau là gì, vì lúc nào cũng làm việc với req, res và phần còn lại là hàm `next()` đã lo
+- Còn `guards` thì hoàn toàn ngược lại, nó mạnh mẽ hơn nhờ middleware ngoài khả năng truy cập req, res nó còn được sử dụng `ExcutionContext` (không gian thực thi code)
