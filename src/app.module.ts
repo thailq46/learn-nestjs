@@ -3,6 +3,7 @@ import {ConfigModule, ConfigService} from '@nestjs/config';
 import {MongooseModule} from '@nestjs/mongoose';
 import {AppController} from './app.controller';
 import {AppService} from './app.service';
+import {UsersModule} from './users/users.module';
 
 @Module({
   imports: [
@@ -11,12 +12,14 @@ import {AppService} from './app.service';
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
         uri: configService.get<string>('MONGOOSE_URI'),
+        dbName: configService.get<string>('MONGOOSE_DB_NAME'),
       }),
       inject: [ConfigService],
     }),
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
