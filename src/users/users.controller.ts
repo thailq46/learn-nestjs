@@ -1,4 +1,5 @@
 import {Body, Controller, Delete, Get, Param, Patch, Post} from '@nestjs/common';
+import {Public} from 'src/decorator/customize';
 import {CreateUserDto} from 'src/users/dto/create-user.dto';
 import {UpdateUserDto} from './dto/update-user.dto';
 import {UsersService} from './users.service';
@@ -12,6 +13,7 @@ export class UsersController {
   //   return this.usersService.create({email, password, name});
   // }
 
+  @Public()
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
     const {email, password, name} = createUserDto;
