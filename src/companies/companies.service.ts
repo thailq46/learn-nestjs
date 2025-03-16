@@ -59,7 +59,6 @@ export class CompaniesService {
     delete filter.limit;
     filter.isDeleted = false;
 
-    console.log('Filter', filter);
     const offset = (currentPage - 1) * limit;
 
     const totalItems = await this.companyModel.countDocuments(filter);
