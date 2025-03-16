@@ -210,3 +210,19 @@ teamCompany.start();
 - Làm nhiệm vụ giống middleware, can thiệp vào req và res. Req -> Guards -> Res
 - Với middleware, không thể biết `handler` phía sau là gì, vì lúc nào cũng làm việc với req, res và phần còn lại là hàm `next()` đã lo
 - Còn `guards` thì hoàn toàn ngược lại, nó mạnh mẽ hơn nhờ middleware ngoài khả năng truy cập req, res nó còn được sử dụng `ExcutionContext` (không gian thực thi code)
+
+# Interceptors
+
+- Nó sẽ can thiệp được vào `context(ExecutionContext)` mà thằng middleware nó không bao giờ làm được
+
+# Reactive Programing
+
+# Observable > < Promise
+
+flowchart TD
+A[Client gửi Request] --> B[NestJS nhận Request]
+B --> C[Interceptor: Pre-processing (log "Trước khi gọi handler")]
+C --> D[Handler được gọi]
+D --> E[Handler xử lý và trả về kết quả]
+E --> F[Interceptor: Post-processing (pipe, tap operator log kết quả)]
+F --> G[Response gửi về Client]

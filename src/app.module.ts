@@ -4,10 +4,13 @@ import {APP_GUARD} from '@nestjs/core';
 import {MongooseModule} from '@nestjs/mongoose';
 import {softDeletePlugin} from 'soft-delete-plugin-mongoose';
 import {JwtAuthGuard} from 'src/auth/jwt-auth.guard';
-import {AppController} from './app.controller';
 import {AppService} from './app.service';
 import {AuthModule} from './auth/auth.module';
+import {CompaniesModule} from './companies/companies.module';
 import {UsersModule} from './users/users.module';
+
+const GlobalModule = [UsersModule, AuthModule, CompaniesModule];
+
 @Module({
   imports: [
     // Để lấy URI từ file .env, ta cần sử dụng ConfigModule và ConfigService
@@ -26,10 +29,8 @@ import {UsersModule} from './users/users.module';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    UsersModule,
-    AuthModule,
+    ...GlobalModule,
   ],
-  controllers: [AppController],
   providers: [
     AppService,
     {

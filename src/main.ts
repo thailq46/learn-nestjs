@@ -1,8 +1,9 @@
 import {ValidationPipe} from '@nestjs/common';
 import {ConfigService} from '@nestjs/config';
-import {NestFactory} from '@nestjs/core';
+import {NestFactory, Reflector} from '@nestjs/core';
 import {NestExpressApplication} from '@nestjs/platform-express';
 import {join} from 'path';
+import {TransformInterceptor} from 'src/core/transform.interceptor';
 import {AppModule} from './app.module';
 
 async function bootstrap() {
@@ -20,6 +21,8 @@ async function bootstrap() {
   app.setBaseViewsDir(join(__dirname, '..', 'views')); // html
   app.setViewEngine('ejs');
 
+  const reflector = app.get(Reflector);
+  app.useGlobalInterceptors(new TransformInterceptor(reflector));
   app.useGlobalPipes(new ValidationPipe());
 
   await app.listen(configService.get<string>('PORT') ?? 3000);
