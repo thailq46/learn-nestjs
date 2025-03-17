@@ -1,5 +1,7 @@
-import {Body, Controller, Delete, Get, Param, Patch, Post} from '@nestjs/common';
-import {Public} from 'src/decorator/customize';
+import {Body, Controller, Delete, Get, Param, Patch, Post, Query} from '@nestjs/common';
+import {Public, ResponseMessage} from 'src/decorator/customize';
+import {User} from 'src/decorator/user.decorator';
+import {IUser} from 'src/types/user.interface';
 import {CreateUserDto} from 'src/users/dto/create-user.dto';
 import {UpdateUserDto} from './dto/update-user.dto';
 import {UsersService} from './users.service';
@@ -15,28 +17,40 @@ export class UsersController {
 
   @Public()
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
+  @ResponseMessage('Tạo tài khoản thành công')
+  create(@Body() createUserDto: CreateUserDto, @User() user: IUser) {
     const {email, password, name} = createUserDto;
-    return this.usersService.create({email, password, name});
+    return this.usersService.create({email, password, name}, user);
   }
 
+  @Public()
   @Get()
-  findAll() {
-    return this.usersService.findAll();
+  @ResponseMessage('Lấy danh sách tài khoản thành công')
+  findAll(@Query() query) {
+    const {page = 1, limit = 10} = query;
+    return this.usersService.findAll({
+      page: +page,
+      limit: +limit,
+      qs: query,
+    });
   }
 
+  @Public()
   @Get(':id')
+  @ResponseMessage('Lấy thông tin tài khoản thành công')
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(id, updateUserDto);
+  @ResponseMessage('Cập nhật tài khoản thành công')
+  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto, @User() user: IUser) {
+    return this.usersService.update(id, updateUserDto, user);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(id);
+  @ResponseMessage('Xóa tài khoản thành công')
+  remove(@Param('id') id: string, @User() user: IUser) {
+    return this.usersService.remove(id, user);
   }
 }

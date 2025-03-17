@@ -2,6 +2,7 @@ import {Type} from 'class-transformer';
 import {IsEmail, IsNotEmpty, IsNotEmptyObject, IsObject, ValidateNested} from 'class-validator';
 import mongoose from 'mongoose';
 
+// DTO là cửa ngõ trước khi vào Controller
 class Company {
   @IsNotEmpty({
     message: 'Name không được để trống',
