@@ -26,11 +26,11 @@ export class UsersController {
   @Public()
   @Get()
   @ResponseMessage('Lấy danh sách tài khoản thành công')
-  findAll(@Query() query) {
-    const {page = 1, limit = 10} = query;
+  findAll(@Query() query: {current?: string; pageSize?: string}) {
+    const {current = 1, pageSize = 10} = query;
     return this.usersService.findAll({
-      page: +page,
-      limit: +limit,
+      page: +current,
+      limit: +pageSize,
       qs: query,
     });
   }

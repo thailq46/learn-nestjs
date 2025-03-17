@@ -55,8 +55,8 @@ export class CompaniesService {
   async findAll({currentPage = 1, limit = 10, qs}: {currentPage?: number; limit?: number; qs: any}) {
     const unSelect = ['-deletedAt', '-deletedBy', '-isDeleted', '-__v', '-description'];
     const {filter, population, sort} = aqp(qs);
-    delete filter.page;
-    delete filter.limit;
+    delete filter.current;
+    delete filter.pageSize;
     filter.isDeleted = false;
 
     const offset = (currentPage - 1) * limit;

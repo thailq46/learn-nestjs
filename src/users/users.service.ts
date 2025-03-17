@@ -52,10 +52,10 @@ export class UsersService {
     return user;
   }
 
-  async findAll({page, limit, qs}: {page: number; limit: number; qs: string}) {
+  async findAll({page, limit, qs}: {page: number; limit: number; qs: any}) {
     const {filter, sort, population} = aqp(qs);
-    delete filter.page;
-    delete filter.limit;
+    delete filter.current;
+    delete filter.pageSize;
     filter.isDeleted = false;
 
     const offset = (page - 1) * limit;

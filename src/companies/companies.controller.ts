@@ -28,9 +28,9 @@ export class CompaniesController {
   @Public()
   @Get()
   @ResponseMessage('Get all companies successfully')
-  findAll(@Query() query: {page?: string; limit?: string}) {
-    const {page = '1', limit = '10'} = query;
-    return this.companiesService.findAll({currentPage: +page, limit: +limit, qs: query});
+  findAll(@Query() query: {current?: string; pageSize?: string}) {
+    const {current = '1', pageSize = '10'} = query;
+    return this.companiesService.findAll({currentPage: +current, limit: +pageSize, qs: query});
   }
 
   @Get(':id')
