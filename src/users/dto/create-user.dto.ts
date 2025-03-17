@@ -3,7 +3,7 @@ import {IsEmail, IsNotEmpty, IsNotEmptyObject, IsObject, ValidateNested} from 'c
 import mongoose from 'mongoose';
 
 // DTO là cửa ngõ trước khi vào Controller
-class Company {
+export class CompanyDTO {
   @IsNotEmpty({
     message: 'Name không được để trống',
   })
@@ -42,8 +42,8 @@ export class CreateUserDto {
   @IsNotEmptyObject()
   @IsObject()
   @ValidateNested()
-  @Type(() => Company)
-  company?: Company;
+  @Type(() => CompanyDTO)
+  company?: CompanyDTO;
 }
 
 export class RegisterUserDto {

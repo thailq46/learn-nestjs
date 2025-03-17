@@ -1,10 +1,11 @@
 import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
 import mongoose, {HydratedDocument} from 'mongoose';
+import {BaseSchemaCRUD} from 'src/base/model/model.schema-crud';
 
 export type UserDocument = HydratedDocument<User>;
 
 @Schema({timestamps: true})
-export class User {
+export class User extends BaseSchemaCRUD {
   @Prop() // để biết nó là thuộc tính của model
   name: string;
 
@@ -34,36 +35,6 @@ export class User {
 
   @Prop()
   refreshToken: string;
-
-  @Prop({type: Object})
-  createdBy: {
-    _id: mongoose.Schema.Types.ObjectId;
-    email: string;
-  };
-
-  @Prop({type: Object})
-  updatedBy: {
-    _id: mongoose.Schema.Types.ObjectId;
-    email: string;
-  };
-
-  @Prop({type: Object})
-  deletedBy: {
-    _id: mongoose.Schema.Types.ObjectId;
-    email: string;
-  };
-
-  @Prop()
-  createdAt: Date;
-
-  @Prop()
-  updatedAt: Date;
-
-  @Prop()
-  isDeleted: boolean;
-
-  @Prop()
-  DeletedAt: Date;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

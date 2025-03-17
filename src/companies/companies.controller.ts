@@ -11,16 +11,19 @@ export class CompaniesController {
   constructor(private readonly companiesService: CompaniesService) {}
 
   @Post()
+  @ResponseMessage('Create company successfully')
   create(@Body() createCompanyDto: CreateCompanyDto, @User() user: IUser) {
     return this.companiesService.create(createCompanyDto, user);
   }
 
   @Patch(':id')
+  @ResponseMessage('Update company successfully')
   update(@Param('id') id: string, @Body() updateCompanyDto: UpdateCompanyDto, @User() user: IUser) {
     return this.companiesService.update({id, updateCompanyDto, user});
   }
 
   @Delete(':id')
+  @ResponseMessage('Remove company successfully')
   remove(@Param('id') id: string, @User() user: IUser) {
     return this.companiesService.remove(id, user);
   }
@@ -33,8 +36,10 @@ export class CompaniesController {
     return this.companiesService.findAll({currentPage: +current, limit: +pageSize, qs: query});
   }
 
+  @Public()
   @Get(':id')
+  @ResponseMessage('Get company successfully')
   findOne(@Param('id') id: string) {
-    return this.companiesService.findOne(+id);
+    return this.companiesService.findOne(id);
   }
 }

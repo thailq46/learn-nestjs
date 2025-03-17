@@ -11,8 +11,12 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const configService = app.get(ConfigService);
 
+  /**
+   * origin: true => Chỉ cho phép kết nối từ cùng origin với server
+   * oringin: '*' => Cho phép kết nối từ bất cứ nơi đâu
+   */
   app.enableCors({
-    origin: '*',
+    origin: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     preflightContinue: false,
     optionsSuccessStatus: 204,
