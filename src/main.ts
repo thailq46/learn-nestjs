@@ -2,6 +2,7 @@ import {ValidationPipe, VersioningType} from '@nestjs/common';
 import {ConfigService} from '@nestjs/config';
 import {NestFactory, Reflector} from '@nestjs/core';
 import {NestExpressApplication} from '@nestjs/platform-express';
+import * as cookieParser from 'cookie-parser';
 import {join} from 'path';
 import {TransformInterceptor} from 'src/core/transform.interceptor';
 import {AppModule} from './app.module';
@@ -24,6 +25,9 @@ async function bootstrap() {
   const reflector = app.get(Reflector);
   app.useGlobalInterceptors(new TransformInterceptor(reflector));
   app.useGlobalPipes(new ValidationPipe());
+
+  // Cookie
+  app.use(cookieParser());
 
   // Config versioning
   app.setGlobalPrefix('api');

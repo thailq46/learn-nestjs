@@ -121,4 +121,8 @@ export class UsersService {
   findOneByUsername(username: string) {
     return this.userModel.findOne({email: username}).select('-__v').lean();
   }
+
+  async updateUserRefreshToken(userId: string, refreshToken: string) {
+    return await this.userModel.updateOne({_id: userId}, {refreshToken});
+  }
 }
