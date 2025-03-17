@@ -125,4 +125,8 @@ export class UsersService {
   async updateUserRefreshToken(userId: string, refreshToken: string) {
     return await this.userModel.updateOne({_id: userId}, {refreshToken});
   }
+
+  findUserByToken = async (refreshToken: string) => {
+    return await this.userModel.findOne({refreshToken}).select('-password -__v').lean();
+  };
 }

@@ -1,4 +1,4 @@
-import {Injectable} from '@nestjs/common';
+import {BadRequestException, Injectable} from '@nestjs/common';
 import {ConfigService} from '@nestjs/config';
 import {JwtService} from '@nestjs/jwt';
 import {Response} from 'express';
@@ -29,14 +29,7 @@ export class AuthService {
 
   async login(user: IUser, res: Response) {
     const {_id, email, name, role} = user;
-    const payload = {
-      sub: 'token login',
-      iss: 'from server',
-      email,
-      _id,
-      name,
-      role,
-    };
+    const accessToken = await this.createAccessToken(user);
     const refreshToken = await this.createRefreshToken(user);
     await this.usersService.updateUserRefreshToken(user._id, refreshToken);
 
@@ -44,13 +37,11 @@ export class AuthService {
 
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
-      secure: true,
       maxAge: ms(expiresIn),
-      sameSite: 'none',
     });
 
     return {
-      access_token: this.jwtService.sign(payload),
+      access_token: accessToken,
       user: {
         _id,
         email,
@@ -68,6 +59,19 @@ export class AuthService {
     };
   }
 
+  async createAccessToken(user: IUser) {
+    const {_id, email, name, role} = user;
+    const payload = {
+      sub: 'token access',
+      iss: 'from server',
+      email,
+      _id,
+      name,
+      role,
+    };
+    return this.jwtService.sign(payload);
+  }
+
   async createRefreshToken(user: IUser) {
     const {_id, email, name, role} = user;
     const payload = {
@@ -83,5 +87,44 @@ export class AuthService {
       expiresIn: this.configService.get<string>('REFRESH_TOKEN_EXP'),
     });
     return refreshToken;
+  }
+
+  async processRefreshToken(refreshToken: string, res: Response) {
+    try {
+      const user = await this.usersService.findUserByToken(refreshToken);
+      if (user) {
+        const userId = user._id.toString();
+        const accessToken = await this.createAccessToken({...user, _id: userId});
+        const refreshToken = await this.createRefreshToken({...user, _id: userId});
+        await this.usersService.updateUserRefreshToken(userId, refreshToken);
+        const expiresIn = this.configService.get<ms.StringValue>('REFRESH_TOKEN_EXP') || '30d';
+
+        res.clearCookie('refreshToken');
+        res.cookie('refreshToken', refreshToken, {
+          httpOnly: true,
+          maxAge: ms(expiresIn),
+        });
+
+        return {
+          access_token: accessToken,
+          user: {
+            _id: userId,
+            email: user.email,
+            name: user.name,
+            role: user.role,
+          },
+        };
+      } else {
+        throw new BadRequestException('Token không hợp lệ');
+      }
+    } catch (error) {
+      throw new BadRequestException('Token không hợp lệ: ' + error);
+    }
+  }
+
+  async logout(res: Response, user: IUser) {
+    await this.usersService.updateUserRefreshToken(user._id, '');
+    res.clearCookie('refreshToken');
+    return 'Đăng xuất thành công';
   }
 }

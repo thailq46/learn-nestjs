@@ -1,4 +1,4 @@
-import {Body, Controller, Get, Post, Request, Response as Res, UseGuards} from '@nestjs/common';
+import {Body, Controller, Get, Post, Req, Request, Response as Res, UseGuards} from '@nestjs/common';
 import {Response} from 'express';
 import {AuthService} from 'src/auth/auth.service';
 import {LocalAuthGuard} from 'src/auth/local-auth.guard';
@@ -29,5 +29,19 @@ export class AuthController {
   @ResponseMessage('Lấy thông tin tài khoản thành công')
   handleGetAccount(@User() user: IUser) {
     return {user};
+  }
+
+  @Public()
+  @Get('/refresh-token')
+  @ResponseMessage('Lấy token mới thành công')
+  handleRefreshToken(@Req() req, @Res({passthrough: true}) res: Response) {
+    const refreskToken = req.cookies['refreshToken'];
+    return this.authService.processRefreshToken(refreskToken, res);
+  }
+
+  @Post('/logout')
+  @ResponseMessage('Đăng xuất thành công')
+  handleLogout(@Res({passthrough: true}) res: Response, @User() user: IUser) {
+    return this.authService.logout(res, user);
   }
 }
