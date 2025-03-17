@@ -16,6 +16,7 @@ async function bootstrap() {
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     preflightContinue: false,
     optionsSuccessStatus: 204,
+    credentials: true,
   });
 
   app.useStaticAssets(join(__dirname, '..', 'public')); // js, css, images
