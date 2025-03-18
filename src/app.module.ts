@@ -9,10 +9,21 @@ import {AuthModule} from './auth/auth.module';
 import {CompaniesModule} from './companies/companies.module';
 import {FilesModule} from './files/files.module';
 import {JobsModule} from './jobs/jobs.module';
+import {PermissionsModule} from './permissions/permissions.module';
 import {ResumesModule} from './resumes/resumes.module';
+import {RolesModule} from './roles/roles.module';
 import {UsersModule} from './users/users.module';
 
-const GlobalModule = [UsersModule, AuthModule, CompaniesModule, JobsModule, FilesModule, ResumesModule];
+const GlobalModule = [
+  UsersModule,
+  AuthModule,
+  CompaniesModule,
+  JobsModule,
+  FilesModule,
+  ResumesModule,
+  PermissionsModule,
+  RolesModule,
+];
 
 @Module({
   imports: [
