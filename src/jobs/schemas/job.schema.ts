@@ -1,6 +1,6 @@
 import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
 import mongoose, {HydratedDocument} from 'mongoose';
-import {BaseSchemaCRUD} from 'src/base/model/model.schema-crud';
+import {BaseSchemaCRUD} from 'src/base/models/model.schema-crud';
 
 export type JobDocument = HydratedDocument<Job>;
 

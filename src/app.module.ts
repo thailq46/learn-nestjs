@@ -7,10 +7,11 @@ import {JwtAuthGuard} from 'src/auth/jwt-auth.guard';
 import {AppService} from './app.service';
 import {AuthModule} from './auth/auth.module';
 import {CompaniesModule} from './companies/companies.module';
+import {FilesModule} from './files/files.module';
 import {JobsModule} from './jobs/jobs.module';
 import {UsersModule} from './users/users.module';
 
-const GlobalModule = [UsersModule, AuthModule, CompaniesModule, JobsModule];
+const GlobalModule = [UsersModule, AuthModule, CompaniesModule, JobsModule, FilesModule];
 
 @Module({
   imports: [

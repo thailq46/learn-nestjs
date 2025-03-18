@@ -226,3 +226,5 @@ C --> D[Handler được gọi]
 D --> E[Handler xử lý và trả về kết quả]
 E --> F[Interceptor: Post-processing (pipe, tap operator log kết quả)]
 F --> G[Response gửi về Client]
+
+Request -> Interceptor -> Pipe (Validate) -> Response
