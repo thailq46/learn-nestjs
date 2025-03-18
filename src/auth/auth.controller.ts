@@ -4,12 +4,16 @@ import {AuthService} from 'src/auth/auth.service';
 import {LocalAuthGuard} from 'src/auth/local-auth.guard';
 import {Public, ResponseMessage} from 'src/decorator/customize';
 import {User} from 'src/decorator/user.decorator';
+import {RolesService} from 'src/roles/roles.service';
 import {IUser} from 'src/types/user.interface';
 import {RegisterUserDto} from 'src/users/dto/create-user.dto';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly roleService: RolesService,
+  ) {}
 
   @Public()
   @UseGuards(LocalAuthGuard)
@@ -27,7 +31,9 @@ export class AuthController {
 
   @Get('/account')
   @ResponseMessage('Lấy thông tin tài khoản thành công')
-  handleGetAccount(@User() user: IUser) {
+  async handleGetAccount(@User() user: IUser) {
+    const temp = (await this.roleService.findOne(user.role._id)) as any;
+    user.permissions = temp?.permissions || [];
     return {user};
   }
 

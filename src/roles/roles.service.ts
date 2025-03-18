@@ -4,7 +4,7 @@ import aqp from 'api-query-params';
 import mongoose from 'mongoose';
 import {SoftDeleteModel} from 'soft-delete-plugin-mongoose';
 import {Role, RoleDocument} from 'src/roles/schemas/role.schema';
-import {IUser} from 'src/types/user.interface';
+import {ADMIN_ROLE, IUser} from 'src/types/user.interface';
 import {CreateRoleDto} from './dto/create-role.dto';
 import {UpdateRoleDto} from './dto/update-role.dto';
 
@@ -114,10 +114,17 @@ export class RolesService {
       throw new BadRequestException('Id không hợp lệ');
     }
     const foundRole = await this.roleModel.findById(id);
-    if (foundRole?.name === 'ADMIN') {
+    if (foundRole?.name === ADMIN_ROLE) {
       throw new BadRequestException('Không thể xóa role admin');
     }
     await this.roleModel.updateOne({_id: id}, {deletedBy: {_id: user._id, email: user.email}});
     return this.roleModel.softDelete({_id: id});
+  }
+
+  async findRoleByName(name: string) {
+    return this.roleModel.findOne({
+      name,
+      isDeleted: false,
+    });
   }
 }

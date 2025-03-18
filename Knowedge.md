@@ -228,3 +228,15 @@ E --> F[Interceptor: Post-processing (pipe, tap operator log kết quả)]
 F --> G[Response gửi về Client]
 
 Request -> Interceptor -> Pipe (Validate) -> Response
+
+# NestJS Lifecycle Event? Tại sao cần lifecycle
+
+- Với NestJS gồm 3 phases chính:
+
+  - Phase 1: Initializing (Khởi tạo), khởi tạo các connections, DI, modules,...
+  - Phase 2: Running -> Chính là lúc ứng dụng chạy thành công
+  - Phase 3: Terminating -> Trong quá trình chạy, nếu có bugs xảy ra khiến server bị lỗi => DIE
+
+- Tại sao cần -> Để can thiệp vào quá trình chạy ứng dụng
+  - Khi ứng dụng die => Do something
+  - Khi ứng dụng chưa chạy lên => Check logic, init fake data,...

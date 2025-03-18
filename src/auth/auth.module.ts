@@ -5,6 +5,7 @@ import {PassportModule} from '@nestjs/passport';
 import {AuthController} from 'src/auth/auth.controller';
 import {JwtStrategy} from 'src/auth/passport/jwt.strategy';
 import {LocalStrategy} from 'src/auth/passport/local.strategy';
+import {RolesModule} from 'src/roles/roles.module';
 import {UsersModule} from 'src/users/users.module';
 import {AuthService} from './auth.service';
 
@@ -19,6 +20,7 @@ import {AuthService} from './auth.service';
         signOptions: {expiresIn: config.get<string>('ACCESS_TOKEN_EXP')},
       }),
     }),
+    RolesModule,
   ],
   providers: [AuthService, LocalStrategy, JwtStrategy],
   controllers: [AuthController],

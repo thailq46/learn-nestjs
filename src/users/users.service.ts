@@ -4,14 +4,18 @@ import aqp from 'api-query-params';
 import {compareSync, genSaltSync, hashSync} from 'bcryptjs';
 import mongoose from 'mongoose';
 import {SoftDeleteModel} from 'soft-delete-plugin-mongoose';
-import {IUser} from 'src/types/user.interface';
+import {Role, RoleDocument} from 'src/roles/schemas/role.schema';
+import {IUser, USER_ROLE} from 'src/types/user.interface';
 import {CreateUserDto, RegisterUserDto} from 'src/users/dto/create-user.dto';
 import {UpdateUserDto} from './dto/update-user.dto';
 import {User, UserDocument} from './schemas/user.schema';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectModel(User.name) private userModel: SoftDeleteModel<UserDocument>) {}
+  constructor(
+    @InjectModel(User.name) private userModel: SoftDeleteModel<UserDocument>,
+    @InjectModel(Role.name) private roleModel: SoftDeleteModel<RoleDocument>,
+  ) {}
 
   hashPassword(password: string) {
     const salt = genSaltSync(10);
@@ -28,12 +32,14 @@ export class UsersService {
     if (isExist) {
       throw new BadRequestException(`Email ${body.email} đã tồn tại`);
     }
+    // Fetch role user
+    const userRole = await this.roleModel.findOne({name: USER_ROLE});
     const hashPassword = this.hashPassword(body.password);
     const newUser = await this.userModel.create({
       ...body,
       password: hashPassword,
       createdBy: {_id: user._id, email: user.email},
-      role: 'USER',
+      role: userRole?._id,
     });
     return {
       _id: newUser?._id,
@@ -48,7 +54,17 @@ export class UsersService {
     if (isExist) {
       throw new BadRequestException(`Email ${email} đã tồn tại`);
     }
-    const user = await this.userModel.create({name, email, password: hashPassword, age, gender, address, role: 'USER'});
+    // Fetch role user
+    const userRole = await this.roleModel.findOne({name: USER_ROLE});
+    const user = await this.userModel.create({
+      name,
+      email,
+      password: hashPassword,
+      age,
+      gender,
+      address,
+      role: userRole?._id,
+    });
     return user;
   }
 
@@ -130,7 +146,7 @@ export class UsersService {
     return this.userModel
       .findOne({email: username})
       .select('-__v')
-      .populate({path: 'role', select: {name: 1, permissions: 1}})
+      .populate({path: 'role', select: {name: 1}})
       .lean();
   }
 
@@ -139,6 +155,10 @@ export class UsersService {
   }
 
   findUserByToken = async (refreshToken: string) => {
-    return await this.userModel.findOne({refreshToken}).select('-password -__v').lean();
+    return await this.userModel
+      .findOne({refreshToken})
+      .select('-password -__v')
+      .populate({path: 'role', select: {name: 1}})
+      .lean();
   };
 }

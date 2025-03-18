@@ -39,7 +39,7 @@ export class CreateUserDto {
 
   @IsNotEmpty({message: 'Role không được để trống'})
   @IsMongoId({message: 'Role không hợp lệ'})
-  role: mongoose.Schema.Types.ObjectId;
+  role?: mongoose.Schema.Types.ObjectId;
 
   @IsNotEmptyObject()
   @IsObject()
@@ -75,4 +75,6 @@ export class RegisterUserDto {
   gender: string;
 
   address: string;
+
+  role?: mongoose.Schema.Types.ObjectId;
 }
