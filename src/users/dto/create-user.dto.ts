@@ -1,5 +1,5 @@
 import {Type} from 'class-transformer';
-import {IsEmail, IsNotEmpty, IsNotEmptyObject, IsObject, ValidateNested} from 'class-validator';
+import {IsEmail, IsMongoId, IsNotEmpty, IsNotEmptyObject, IsObject, ValidateNested} from 'class-validator';
 import mongoose from 'mongoose';
 
 // DTO là cửa ngõ trước khi vào Controller
@@ -37,7 +37,9 @@ export class CreateUserDto {
 
   address?: string;
 
-  role?: string;
+  @IsNotEmpty({message: 'Role không được để trống'})
+  @IsMongoId({message: 'Role không hợp lệ'})
+  role: mongoose.Schema.Types.ObjectId;
 
   @IsNotEmptyObject()
   @IsObject()

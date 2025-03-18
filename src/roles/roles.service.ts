@@ -79,7 +79,7 @@ export class RolesService {
     ];
     const role = (await this.roleModel.findOne({_id: id, isDeleted: false}).select(unSelect))?.populate({
       path: 'permissions',
-      select: {_id: 1, apiPath: 1, method: 1, module: 1},
+      select: {_id: 1, apiPath: 1, method: 1, module: 1, name: 1},
     });
     return role;
   }
@@ -89,10 +89,10 @@ export class RolesService {
       throw new BadRequestException('Id không hợp lệ');
     }
     const {name, description, isActive, permissions} = updateRoleDto;
-    const isExist = await this.roleModel.findOne({name, _id: {$ne: id}});
-    if (isExist) {
-      throw new BadRequestException(`Role với tên: ${name} đã tồn tại`);
-    }
+    // const isExist = await this.roleModel.findOne({name, _id: {$ne: id}});
+    // if (isExist) {
+    //   throw new BadRequestException(`Role với tên: ${name} đã tồn tại`);
+    // }
     const updated = await this.roleModel.updateOne(
       {_id: id},
       {
@@ -112,6 +112,10 @@ export class RolesService {
   async remove(id: string, user: IUser) {
     if (!mongoose.Types.ObjectId.isValid(id)) {
       throw new BadRequestException('Id không hợp lệ');
+    }
+    const foundRole = await this.roleModel.findById(id);
+    if (foundRole?.name === 'ADMIN') {
+      throw new BadRequestException('Không thể xóa role admin');
     }
     await this.roleModel.updateOne({_id: id}, {deletedBy: {_id: user._id, email: user.email}});
     return this.roleModel.softDelete({_id: id});

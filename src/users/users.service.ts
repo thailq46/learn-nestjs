@@ -103,6 +103,7 @@ export class UsersService {
         {new: true},
       )
       .select('-password -__v')
+      .populate({path: 'role', select: {name: 1, _id: 1}})
       .lean();
     return {
       _id: updateUser?._id,
@@ -111,6 +112,13 @@ export class UsersService {
   }
 
   async remove(id: string, user: IUser) {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return 'Id không hợp lệ';
+    }
+    const foundUser = await this.userModel.findById(id);
+    if (foundUser?.email === 'admin@gmail.com') {
+      throw new BadRequestException('Không thể xóa tài khoản admin');
+    }
     await this.userModel.updateOne({_id: id}, {deletedBy: {_id: user._id, email: user.email}});
     await this.userModel.softDelete({_id: id});
     return {
@@ -119,7 +127,11 @@ export class UsersService {
   }
 
   findOneByUsername(username: string) {
-    return this.userModel.findOne({email: username}).select('-__v').lean();
+    return this.userModel
+      .findOne({email: username})
+      .select('-__v')
+      .populate({path: 'role', select: {name: 1, permissions: 1}})
+      .lean();
   }
 
   async updateUserRefreshToken(userId: string, refreshToken: string) {
