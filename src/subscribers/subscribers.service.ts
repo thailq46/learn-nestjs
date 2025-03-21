@@ -83,18 +83,16 @@ export class SubscribersService {
     return this.subscriberModel.findById(id).select(unSelect).lean();
   }
 
-  async update(id: string, updateSubscriberDto: UpdateSubscriberDto, user: IUser) {
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      throw new BadRequestException('Id không hợp lệ');
-    }
+  async update(updateSubscriberDto: UpdateSubscriberDto, user: IUser) {
     const updated = await this.subscriberModel
-      .findByIdAndUpdate(
-        id,
+      .updateOne(
+        {email: user.email},
         {
           ...updateSubscriberDto,
           updatedBy: {_id: user._id, email: user.email},
         },
-        {new: true},
+        // Nếu tồn tài rồi thì cập nhật, không thì tạo mới
+        {upsert: true},
       )
       .select('-__v')
       .lean();
@@ -107,5 +105,9 @@ export class SubscribersService {
     }
     await this.subscriberModel.updateOne({_id: id}, {deletedBy: {_id: user._id, email: user.email}});
     return this.subscriberModel.softDelete({_id: id});
+  }
+
+  async getSkills(user: IUser) {
+    return await this.subscriberModel.findOne({email: user.email}).select('skills').lean();
   }
 }

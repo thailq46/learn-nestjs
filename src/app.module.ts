@@ -9,6 +9,7 @@ import {AuthModule} from './auth/auth.module';
 import {CompaniesModule} from './companies/companies.module';
 import {FilesModule} from './files/files.module';
 import {JobsModule} from './jobs/jobs.module';
+import {MailModule} from './mail/mail.module';
 import {PermissionsModule} from './permissions/permissions.module';
 import {ResumesModule} from './resumes/resumes.module';
 import {RolesModule} from './roles/roles.module';
@@ -25,6 +26,7 @@ const GlobalModule = [
   PermissionsModule,
   RolesModule,
   SubscribersModule,
+  MailModule,
 ];
 
 @Module({
