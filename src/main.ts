@@ -2,7 +2,9 @@ import {ValidationPipe, VersioningType} from '@nestjs/common';
 import {ConfigService} from '@nestjs/config';
 import {NestFactory, Reflector} from '@nestjs/core';
 import {NestExpressApplication} from '@nestjs/platform-express';
+import {DocumentBuilder, SwaggerModule} from '@nestjs/swagger';
 import * as cookieParser from 'cookie-parser';
+import helmet from 'helmet';
 import {join} from 'path';
 import {TransformInterceptor} from 'src/core/transform.interceptor';
 import {AppModule} from './app.module';
@@ -22,6 +24,8 @@ async function bootstrap() {
     optionsSuccessStatus: 204,
     credentials: true,
   });
+
+  app.use(helmet());
 
   app.useStaticAssets(join(__dirname, '..', 'public')); // js, css, images
   app.setBaseViewsDir(join(__dirname, '..', 'views')); // html
@@ -43,6 +47,29 @@ async function bootstrap() {
   app.enableVersioning({
     type: VersioningType.URI,
     defaultVersion: ['1', '2'],
+  });
+
+  const config = new DocumentBuilder()
+    .setTitle('Learn NestJS')
+    .setDescription('The NestJS API description')
+    .setVersion('1.0')
+    // .addTag('cats')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'Bearer',
+        bearerFormat: 'JWT',
+        in: 'header',
+      },
+      'token',
+    )
+    .addSecurityRequirements('token')
+    .build();
+  const documentFactory = () => SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('swagger', app, documentFactory, {
+    swaggerOptions: {
+      persistAuthorization: true,
+    },
   });
 
   await app.listen(configService.get<string>('PORT') ?? 3000);

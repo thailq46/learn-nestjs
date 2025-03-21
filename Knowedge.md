@@ -240,3 +240,7 @@ Request -> Interceptor -> Pipe (Validate) -> Response
 - Tại sao cần -> Để can thiệp vào quá trình chạy ứng dụng
   - Khi ứng dụng die => Do something
   - Khi ứng dụng chưa chạy lên => Check logic, init fake data,...
+
+# Tạo docs bằng @compodoc/compodoc
+
+npx @compodoc/compodoc -p tsconfig.json -s

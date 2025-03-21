@@ -3,12 +3,14 @@ import {ConfigModule, ConfigService} from '@nestjs/config';
 import {APP_GUARD} from '@nestjs/core';
 import {MongooseModule} from '@nestjs/mongoose';
 import {ScheduleModule} from '@nestjs/schedule';
+import {ThrottlerModule} from '@nestjs/throttler';
 import {softDeletePlugin} from 'soft-delete-plugin-mongoose';
 import {JwtAuthGuard} from 'src/auth/jwt-auth.guard';
 import {AppService} from './app.service';
 import {AuthModule} from './auth/auth.module';
 import {CompaniesModule} from './companies/companies.module';
 import {FilesModule} from './files/files.module';
+import {HealthModule} from './health/health.module';
 import {JobsModule} from './jobs/jobs.module';
 import {MailModule} from './mail/mail.module';
 import {PermissionsModule} from './permissions/permissions.module';
@@ -28,10 +30,12 @@ const GlobalModule = [
   RolesModule,
   SubscribersModule,
   MailModule,
+  HealthModule,
 ];
 
 @Module({
   imports: [
+    ThrottlerModule.forRoot({throttlers: [{ttl: 60000, limit: 10}]}),
     ScheduleModule.forRoot(),
     // Để lấy URI từ file .env, ta cần sử dụng ConfigModule và ConfigService
     MongooseModule.forRootAsync({
