@@ -1,0 +1,32 @@
+services:
+  db-mongo:
+    image: mongo:6.0.6
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpassword
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodb:/data/db
+    expose:
+      - 27017
+  be-nest:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    # Tham số khai báo ở đây sẽ ghi đè lại ở file .env
+    environment:
+      - PORT=3005
+      - NODE_ENV=production
+    expose:
+      - 3005
+    ports:
+      - 3005:3005
+    depends_on:
+      - db-mongo
+    links:
+      - db-mongo
+# Khi chạy lại ko bị mất dữ liệu
+volumes:
+  mongodb:
