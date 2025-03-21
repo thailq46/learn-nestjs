@@ -34,11 +34,16 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
 
     const permissions = user?.permissions || [];
 
-    const hasPermission = permissions.find(
+    let hasPermission = permissions.find(
       (permission) => targetMethod === permission.method && targetEndpoint === permission.endpoint,
     );
+
+    if (targetEndpoint.startsWith('/api/v1/auth')) {
+      hasPermission = true;
+    }
+
     if (!hasPermission) {
-      throw new ForbiddenException('Không có quyền truy cập');
+      throw new ForbiddenException('Bạn không có quyền truy cập endpoint này');
     }
     return user;
   }

@@ -12,6 +12,7 @@ import {JobsModule} from './jobs/jobs.module';
 import {PermissionsModule} from './permissions/permissions.module';
 import {ResumesModule} from './resumes/resumes.module';
 import {RolesModule} from './roles/roles.module';
+import {SubscribersModule} from './subscribers/subscribers.module';
 import {UsersModule} from './users/users.module';
 
 const GlobalModule = [
@@ -23,6 +24,7 @@ const GlobalModule = [
   ResumesModule,
   PermissionsModule,
   RolesModule,
+  SubscribersModule,
 ];
 
 @Module({
