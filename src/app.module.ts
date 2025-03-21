@@ -2,6 +2,7 @@ import {Module} from '@nestjs/common';
 import {ConfigModule, ConfigService} from '@nestjs/config';
 import {APP_GUARD} from '@nestjs/core';
 import {MongooseModule} from '@nestjs/mongoose';
+import {ScheduleModule} from '@nestjs/schedule';
 import {softDeletePlugin} from 'soft-delete-plugin-mongoose';
 import {JwtAuthGuard} from 'src/auth/jwt-auth.guard';
 import {AppService} from './app.service';
@@ -31,6 +32,7 @@ const GlobalModule = [
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     // Để lấy URI từ file .env, ta cần sử dụng ConfigModule và ConfigService
     MongooseModule.forRootAsync({
       imports: [ConfigModule],

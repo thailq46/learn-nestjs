@@ -1,5 +1,6 @@
 import {MailerService} from '@nestjs-modules/mailer';
 import {Controller, Get} from '@nestjs/common';
+import {Cron} from '@nestjs/schedule';
 import {Public, ResponseMessage} from 'src/decorator/customize';
 import {MailService} from './mail.service';
 
@@ -24,5 +25,11 @@ export class MailController {
       })
       .then(() => {})
       .catch(() => {});
+  }
+
+  @Cron('0 0 0 * * 0') // Run at 00:00:00 on Sunday
+  // @Cron(CronExpression.EVERY_30_SECONDS)
+  handleCron() {
+    console.log('Called when the current time is 30 seconds');
   }
 }
